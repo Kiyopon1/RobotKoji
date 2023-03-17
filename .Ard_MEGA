@@ -1,0 +1,188 @@
+#include <Servo.h>
+#include <AFMotor.h>
+#include <SoftwareSerial.h>
+#include <Adafruit_NeoPixel.h>
+
+
+Adafruit_NeoPixel tira = Adafruit_NeoPixel(8, 28, NEO_GRB + NEO_KHZ800);
+SoftwareSerial bluetoothSerial(53, 52);  // RX, TX
+
+//initial motors pin
+AF_DCMotor motor1(1, MOTOR12_1KHZ);
+AF_DCMotor motor2(2, MOTOR12_1KHZ);
+AF_DCMotor motor3(3, MOTOR34_1KHZ);
+AF_DCMotor motor4(4, MOTOR34_1KHZ);
+Servo name_servoC;
+Servo name_servoT;
+char command;
+
+void setup() {
+  tira.begin();                  // inicializacion de la tira
+  tira.show();                   // muestra datos en pixel                 // Apaga todos los LEDs al inicio
+  bluetoothSerial.begin(38400);  //Set the baud rate to your Bluetooth module.
+  name_servoC.attach(9);
+  name_servoT.attach(10);
+}
+
+void loop() {
+  tira.setBrightness(255);
+  if (bluetoothSerial.available() > 0) {
+    command = bluetoothSerial.read();
+
+
+    Stop();  //initialize with motors stoped
+
+    switch (command) {
+      case 'F':
+        forward();
+        break;
+      case 'B':
+        back();
+        break;
+      case 'R':
+        rigth();
+        break;
+      case 'L':
+        left();
+        break;
+      case 'I':
+        forRight();
+        break;
+      case 'G':
+        forLeft();
+        break;
+      case 'X':
+        upper();
+        break;
+      case 'x':
+        lower();
+        break;
+    }
+  }
+}
+
+void forward() {
+  motor1.setSpeed(255);  //Define maximum velocity
+  motor1.run(FORWARD);   //rotate the motor clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(FORWARD);   //rotate the motor clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(FORWARD);   //rotate the motor clockwise
+  motor4.setSpeed(255);  //Define maximum velocity
+  motor4.run(FORWARD);   //rotate the motor clockwise
+  name_servoC.write(90);
+  tira.setPixelColor(7, 0, 255, 255);
+  tira.setPixelColor(0, 0, 255, 255);
+  tira.setPixelColor(1, 0, 255, 255);
+  tira.setPixelColor(3, 0, 255, 255);
+  tira.setPixelColor(4, 0, 255, 255);
+  tira.setPixelColor(5, 0, 255, 255);
+  tira.setPixelColor(6, 0, 255, 255);
+  tira.show();
+}
+
+void back() {
+  motor1.setSpeed(255);  //Define maximum velocity
+  motor1.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor4.setSpeed(255);  //Define maximum velocity
+  motor4.run(BACKWARD);  //rotate the motor anti-clockwise
+  name_servoC.write(90);
+  tira.setPixelColor(7, 255, 0, 255);
+  tira.setPixelColor(0, 255, 0, 255);
+  tira.setPixelColor(1, 255, 0, 255);
+  tira.setPixelColor(3, 255, 0, 255);
+  tira.setPixelColor(4, 255, 0, 255);
+  tira.setPixelColor(5, 255, 0, 255);
+  tira.setPixelColor(6, 255, 0, 255);
+  tira.show();
+}
+
+void rigth() {
+  motor1.setSpeed(255);  //Define maximum velocity
+  motor1.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(FORWARD);   //rotate the motor clockwise
+  motor4.setSpeed(255);  //Define maximum velocity
+  motor4.run(FORWARD);   //rotate the motor clockwise
+  name_servoC.write(0);
+  tira.setPixelColor(7, 255, 255, 0);
+  tira.setPixelColor(0, 255, 255, 0);
+  tira.setPixelColor(1, 255, 255, 0);
+  tira.setPixelColor(3, 255, 255, 0);
+  tira.setPixelColor(4, 255, 255, 0);
+  tira.setPixelColor(5, 255, 255, 0);
+  tira.setPixelColor(6, 255, 255, 0);
+  tira.show();
+}
+
+void forLeft() {
+  motor1.setSpeed(150);  //Define maximum velocity
+  motor1.run(FORWARD);   //rotate the motor clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(FORWARD);   //rotate the motor clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(FORWARD);   //rotate the motor anti-clockwise
+  motor4.setSpeed(0);    //Define maximum velocity
+  motor4.run(RELEASE);   //rotate the motor anti-clockwise
+  name_servoC.write(140);
+}
+
+void left() {
+  motor1.setSpeed(255);  //Define maximum velocity
+  motor1.run(FORWARD);   //rotate the motor clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(FORWARD);   //rotate the motor clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(BACKWARD);  //rotate the motor anti-clockwise
+  motor4.setSpeed(255);  //Define maximum velocity
+  motor4.run(BACKWARD);  //rotate the motor anti-clockwise
+  name_servoC.write(180);
+  tira.setPixelColor(7, 255, 255, 255);
+  tira.setPixelColor(0, 255, 255, 255);
+  tira.setPixelColor(1, 255, 255, 255);
+  tira.setPixelColor(3, 255, 255, 255);
+  tira.setPixelColor(4, 255, 255, 255);
+  tira.setPixelColor(5, 255, 255, 255);
+  tira.setPixelColor(6, 255, 255, 255);
+  tira.show();
+}
+
+void forRight() {
+  motor1.setSpeed(0);    //Define maximum velocity
+  motor1.run(RELEASE);   //rotate the motor clockwise
+  motor2.setSpeed(255);  //Define maximum velocity
+  motor2.run(FORWARD);   //rotate the motor clockwise
+  motor3.setSpeed(255);  //Define maximum velocity
+  motor3.run(FORWARD);   //rotate the motor anti-clockwise
+  motor4.setSpeed(255);  //Define maximum velocity
+  motor4.run(FORWARD);   //rotate the motor anti-clockwise
+  name_servoC.write(40);
+}
+
+void Stop() {
+  motor1.setSpeed(0);   //Define minimum velocity
+  motor1.run(RELEASE);  //stop the motor when release the button
+  motor2.setSpeed(0);   //Define minimum velocity
+  motor2.run(RELEASE);  //rotate the motor clockwise
+  motor3.setSpeed(0);   //Define minimum velocity
+  motor3.run(RELEASE);  //stop the motor when release the button
+  motor4.setSpeed(0);   //Define minimum velocity
+  motor4.run(RELEASE);  //stop the motor when release the button
+  name_servoC.write(90);
+}
+
+void upper() {
+
+  name_servoT.write(0);
+}
+
+void lower() {
+
+  name_servoT.write(45);
+}

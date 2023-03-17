@@ -1,0 +1,51 @@
+#include <Servo.h>
+Servo servoD;
+Servo servoI;
+int pos1 = 90;
+int pos2 = 150;
+int pos3 = 70;
+int pos4 = 90;
+int pos5 = 30;
+int pos6 = 100;
+int dt = 2000;
+
+int TRIG = 10;  // trigger en pin 10
+int ECO = 9;    // echo en pin 9
+const int buzzerPin = 11;
+int DURACION;
+int DISTANCIA;
+
+
+void setup() {
+  servoD.attach(5);
+  servoI.attach(6);
+  pinMode(TRIG, OUTPUT);  // trigger como salida
+  pinMode(ECO, INPUT);    // echo como entrada
+  pinMode(buzzerPin, OUTPUT);
+  Serial.begin(9600);  // inicializacion de comunicacion serial a 9600 bps
+}
+
+void loop() {
+
+  digitalWrite(TRIG, HIGH);  // generacion del pulso a enviar
+  delay(1);                  // al pin conectado al trigger
+  digitalWrite(TRIG, LOW);   // del sensor
+
+  DURACION = pulseIn(ECO, HIGH);  // con funcion pulseIn se espera un pulso
+                                  // alto en Echo
+  DISTANCIA = DURACION / 58.2;    // distancia medida en centimetros
+  Serial.println(DISTANCIA);      // envio de valor de distancia por monitor serial
+  delay(200);                     // demora entre datos
+
+
+  if (DISTANCIA <= 75 && DISTANCIA >= 0) {  // si distancia entre 0 y 20 cms.
+    servoD.write(pos1);
+    servoI.write(pos4);
+    tone(buzzerPin, 200);   // enciende LED
+    delay(DISTANCIA * 10);  // demora proporcional a la distancia
+    noTone(buzzerPin);      // apaga LED
+  } else {
+    servoD.write(pos2);
+    servoI.write(pos5);
+  }
+}
